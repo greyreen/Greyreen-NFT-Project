@@ -2,6 +2,7 @@
 
 name: Hardhat NFT Tests
 
+# Main dalına yapılan her 'push' veya 'pull request' tetikler
 on:
   push:
     branches: [ "main" ]
@@ -10,23 +11,25 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest # Temiz Linux sunucusunda çalıştır
-
+    runs-on: ubuntu-latest # Testi çalıştıracak sanal makineyi seçer
+    
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # 1. Depoyu indir
 
-      - name: Setup Node.js v18 # Node V18 kullanmaya zorluyoruz
+      - name: Setup Node.js v20 # 2. KESİN ÇÖZÜM: Node v20 LTS sürümünü kullan
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: '20.x'
 
-      - name: Install Dependencies
-        # Toolbox'ı kuran komutları manuel çalıştırıyoruz
+      - name: Install Dependencies # 3. Bağımlılıkları kur
+        # Hardhat v2.14 ve Toolbox'ı kuran komutlar:
         run: |
           npm install --save-dev hardhat@2.14.0
           npm install @openzeppelin/contracts
           npm install @nomicfoundation/hardhat-toolbox
 
-      - name: Run Tests
-        # Testleri çalıştır. Bu, Artifact hatası almayacak!
+      - name: Compile Contracts # 4. Sözleşmeleri derle
+        run: npx hardhat compile
+
+      - name: Run Tests # 5. Testleri çalıştır
         run: npx hardhat test
