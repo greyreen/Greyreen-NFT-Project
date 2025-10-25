@@ -1,0 +1,32 @@
+# .github/workflows/ci.yml
+
+name: Hardhat NFT Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest # Temiz Linux sunucusunda çalıştır
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js v18 # Node V18 kullanmaya zorluyoruz
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+
+      - name: Install Dependencies
+        # Toolbox'ı kuran komutları manuel çalıştırıyoruz
+        run: |
+          npm install --save-dev hardhat@2.14.0
+          npm install @openzeppelin/contracts
+          npm install @nomicfoundation/hardhat-toolbox
+
+      - name: Run Tests
+        # Testleri çalıştır. Bu, Artifact hatası almayacak!
+        run: npx hardhat test
